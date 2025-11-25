@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'BUCKET_NAME', defaultValue: '', description: 'Enter S3 bucket name')
+    }
+
+    environment {
+        AWS_REGION = "us-east-1"
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'repokey',
+                    url: 'git@github.com:krishnasyamalatech11-dotcom/aws-pipeline.git'
+            }
+        }
+
+        stage('Create S3 Bucket') {
+            steps {
+                withAWS(credentials: 'aws-cred', region: env.AWS_REGION) {
+                    sh """
+                    aws s3 mb s3://${BUCKET_NAME}
+                    """
+                }
+            }
+        }
+    }
+}
