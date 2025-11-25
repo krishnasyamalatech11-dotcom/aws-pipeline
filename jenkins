@@ -20,7 +20,7 @@ pipeline {
 
         stage('Create S3 Bucket') {
             steps {
-                withAWS(credentials: 'aws-cred', region: env.AWS_REGION) {
+                withCredentials(credentials: 'aws-cred', region: env.AWS_REGION) {
                     sh """
                     aws s3 mb s3://${BUCKET_NAME}
                     """
@@ -29,3 +29,4 @@ pipeline {
         }
     }
 }
+
